@@ -47,13 +47,17 @@
  -->
     <node pkg="turtlesim" name="sim1" type="turtlesim_node"/>
 
+    <arg name="turtle2x"/>
+    <arg name="turtle2y"/>
+    <arg name="turtle2theta"/>
+    <arg name="turtle1x"/>
+    <arg name="turtle1y"/>
+    <arg name="turtle1theta"/>
 
-     <node pkg="rosservice" type="rosservice" name="kill" args="call --wait /kill &quot;name: 'turtle1'&quot;"/> 
+    <node pkg="rosservice" type="rosservice" name="setpen1" args="call --wait /turtle1/set_pen &quot;{r: 0, g: 0, b: 0, width: 0, 'off': 1}&quot;"/>
 
-    <node pkg="rosservice" type="rosservice" name="spawn2" args="call --wait /spawn '2.0' '6.0' '0.0' 'turtle2'"/>
+    <node pkg="rosservice" type="rosservice" name="setpen2" args="call --wait /turtle2/set_pen &quot;{r: 0, g: 0, b: 0, width: 0, 'off': 1}&quot;"/>
 
-
-    <node pkg="rosservice" type="rosservice" name="spawn1" args="call --wait /spawn '6.0' '10.0' '0.0' 'turtle1'"/>
-
+    <node pkg="rosservice" type="rosservice" name="spawn2" args="call --wait /spawn '$(arg turtle2x)' '$(arg turtle2y)' '$(arg turtle2theta)' 'turtle2'"/>
 
 </launch>
