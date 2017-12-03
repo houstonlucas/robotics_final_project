@@ -11,7 +11,8 @@ from math import asin, sin, cos, pi, sqrt, atan2
 
 
 # Scaling factor of the attractive field
-lambda_factor = 8.5
+attration_factor = 8.5
+redirect_factor = 3.0
 
 dt = 0.05
 
@@ -24,7 +25,6 @@ max_turn_angle = max_turning_speed * dt
 
 control = None
 minimum_redirection_distance = 3.5
-redirectScaler = 1
 target_state = [0, 0, 0.0, 0.0]  # x y t v
 obstacle_state = [target_state[0]/2, target_state[1], 0.0, 0.0]
 robot_state = [0.0, 0.0, 0.0, 0.0]  # x y t v
@@ -79,7 +79,7 @@ def get_desired_cmd():
             return 0.0, theta_v
         pv = 0.0001
 
-    u = lambda_factor * qrv
+    u = attration_factor * qrv
 
     vel = sqrt((pv ** 2) + 2 * u * pv * abs(cos(theta_v - phi)) + u ** 2)
     desired_vel = min(vel, max_velocity)
@@ -125,13 +125,14 @@ def get_redirection_vector(s1, s2, k):
     if ds > minimum_redirection_distance:
         return 0.0, 0.0
 
+    if abs(ds) < 0.0001:
+        return 0.0, 0.0
     V = k/ds
-    # Vx = V*cos(theta)
-    # Vy = V*sin(theta)
+
     return V, theta
 
 def get_total_force():
-    redVect, redTheta = get_redirection_vector(obstacle_state, robot_state, redirectScaler)
+    redVect, redTheta = get_redirection_vector(obstacle_state, robot_state, redirect_factor)
     targetVect, targetTheta = get_desired_cmd()
 
     redVectX = redVect*cos(redTheta)
@@ -183,6 +184,8 @@ def main():
 
     turtle = "/turtle{}".format(args.robotNumber)
     other_turtle = get_other_turtle_name(args.robotNumber)
+    print(turtle, other_turtle)
+
 
     rospy.init_node("pidHelper{}".format(args.robotNumber))
     rospy.Subscriber(turtle + "/pose", Pose, poseCallback)
