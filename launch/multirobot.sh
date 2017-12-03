@@ -1,6 +1,6 @@
 #!/bin/bash
-roslaunch multirobotPID.launch turtle2x:=$1 turtle2y:=$2 turtle2theta:=$3 &
+roslaunch multirobotPID.launch turtle2x:=$6 turtle2y:=$7 turtle2theta:=$8 &
 sleep 1s
-roslaunch teleportpenset.launch turtle1x:=$4 turtle1y:=$5 turtle1theta:=$6 &
+roslaunch teleportpenset.launch turtle1x:=$1 turtle1y:=$2 turtle1theta:=$3 &
 sleep 1s
-roslaunch penset.launch
+roslaunch penset.launch target1x:=$4 target1y:=$5 target2x:=$9 target2y:=$10

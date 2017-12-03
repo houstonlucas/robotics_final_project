@@ -1,5 +1,9 @@
 <launch>
 
+    <arg name="turtle1x"/>
+    <arg name="turtle1y"/>
+    <arg name="turtle1theta"/>
+
 	<node pkg="rosservice" type="rosservice" name="teleport1" args="call --wait /turtle1/teleport_absolute '$(arg turtle1x)' '$(arg turtle1y)' '$(arg turtle1theta)'"/>
 
 </launch>

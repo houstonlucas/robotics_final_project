@@ -50,9 +50,6 @@
     <arg name="turtle2x"/>
     <arg name="turtle2y"/>
     <arg name="turtle2theta"/>
-    <arg name="turtle1x"/>
-    <arg name="turtle1y"/>
-    <arg name="turtle1theta"/>
 
     <node pkg="rosservice" type="rosservice" name="setpen1" args="call --wait /turtle1/set_pen &quot;{r: 0, g: 0, b: 0, width: 0, 'off': 1}&quot;"/>
 

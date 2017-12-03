@@ -1,9 +1,14 @@
 <launch>
+	<arg name="target1x"/>
+    <arg name="target1y"/>
+    <arg name="target2x"/>
+    <arg name="target2y"/>
+
 	<node pkg="rosservice" type="rosservice" name="setpen3" args="call --wait /turtle1/set_pen &quot;{r: 5, g: 0, b: 0, width: 5, 'off': 0}&quot;"/>
-    <node pkg="rosservice" type="rosservice" name="setpen4" args="call --wait /turtle1/set_pen &quot;{r: 5, g: 0, b: 0, width: 5, 'off': 0}&quot;"/>
+    <node pkg="rosservice" type="rosservice" name="setpen4" args="call --wait /turtle2/set_pen &quot;{r: 5, g: 0, b: 0, width: 5, 'off': 0}&quot;"/>
 
-    <node pkg="robotics_final_project" name="pidHelper1" type="pidHelper" args="robotNumber=:1"/>
+    <node pkg="robotics_final_project" name="pidHelper1" type="pidHelper.py" args="--robotNumber 1 --targetx $(arg target1x) --targety $(arg target1y)"/>
 
-    <node pkg="robotics_final_project" name="pidHelper2" type="pidHelper" args="robotNumber=:2"/>
+    <node pkg="robotics_final_project" name="pidHelper2" type="pidHelper.py" args="--robotNumber 2 --targetx $(arg target2x) --targety $(arg target2y)"/>
 
 </launch>
