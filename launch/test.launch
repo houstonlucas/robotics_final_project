@@ -3,7 +3,7 @@
     <node name="turtlesim1" pkg="turtlesim"  type="turtlesim_node" output="screen">
     </node>   
 
-    <node name="controller" pkg="pid" type="controller" ns="robot1" output="screen" >
+    <node name="controller" pkg="pid" type="controller" ns="turtle1" output="screen" >
     <param name="node_name" value="left_wheel_pid" />
     <param name="Kp" value="5.0" />
     <param name="Ki" value="0.0" />
