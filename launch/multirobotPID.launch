@@ -1,0 +1,35 @@
+<launch>
+
+    <node name="controller" pkg="pid" type="controller" ns="turtle1" output="screen" >
+        <param name="node_name" value="left_wheel_pid" />
+        <param name="Kp" value="5.0" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.1" />
+        <param name="upper_limit" value="10" />
+        <param name="lower_limit" value="-10" />
+        <param name="windup_limit" value="10" />
+        <param name="max_loop_frequency" value="100.0" />
+        <param name="min_loop_frequency" value="100.0" />
+        <!-- <remap from="setpoint" to="/setpoint" /> -->
+    </node>
+
+    <!-- Turtlesim Node-->
+    <node pkg="turtlesim" type="turtlesim_node" name="sim"/>
+
+    <node pkg="turtlesim" type="turtle_teleop_key" name="teleop" output="screen"/>
+    <!-- Axes -->
+<!--     <param name="scale_linear" value="2" type="double"/>
+    <param name="scale_angular" value="2" type="double"/> -->
+
+    <node name="turtle1_tf_broadcaster" pkg="turtle_tf" type="turtle_tf_broadcaster.py" respawn="false" output="screen" >
+    <param name="turtle" type="string" value="turtle1" />
+    </node>
+    <node name="turtle2_tf_broadcaster" pkg="turtle_tf" type="turtle_tf_broadcaster.py" respawn="false" output="screen" >
+    <param name="turtle" type="string" value="turtle2" />
+    </node>
+    <node name="turtle_pointer" pkg="turtle_tf" type="turtle_tf_listener.py" respawn="false" output="screen" >
+    </node>
+
+
+
+</launch>

@@ -24,9 +24,9 @@ def controlEffortCallback(data):
 def main():
     rospy.init_node("pidHelper")
     rospy.Subscriber("/turtle1/pose", Pose, poseCallback)
-    rospy.Subscriber("/robot1/control_effort", stdmsgs.Float64, controlEffortCallback)
-    statePub = rospy.Publisher("/robot1/state", stdmsgs.Float64, queue_size = 10)
-    setPointPub = rospy.Publisher("/robot1/setpoint", stdmsgs.Float64, queue_size = 10)
+    rospy.Subscriber("/turtle1/control_effort", stdmsgs.Float64, controlEffortCallback)
+    statePub = rospy.Publisher("/turtle1/state", stdmsgs.Float64, queue_size = 10)
+    setPointPub = rospy.Publisher("/turtle1/setpoint", stdmsgs.Float64, queue_size = 10)
     cmdVelPub = rospy.Publisher("/turtle1/cmd_vel", Twist, queue_size = 10)
 
     rate = rospy.Rate(60) #10hz
