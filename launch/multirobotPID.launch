@@ -10,26 +10,50 @@
         <param name="windup_limit" value="10" />
         <param name="max_loop_frequency" value="100.0" />
         <param name="min_loop_frequency" value="100.0" />
-        <!-- <remap from="setpoint" to="/setpoint" /> -->
+    </node>
+
+    <node name="controller" pkg="pid" type="controller" ns="turtle2" output="screen" >
+        <param name="node_name" value="left_wheel_pid" />
+        <param name="Kp" value="5.0" />
+        <param name="Ki" value="0.0" />
+        <param name="Kd" value="0.1" />
+        <param name="upper_limit" value="10" />
+        <param name="lower_limit" value="-10" />
+        <param name="windup_limit" value="10" />
+        <param name="max_loop_frequency" value="100.0" />
+        <param name="min_loop_frequency" value="100.0" />
     </node>
 
     <!-- Turtlesim Node-->
-    <node pkg="turtlesim" type="turtlesim_node" name="sim"/>
+           <!-- <node pkg="turtlesim" ns="turtle2" name="sim2" type="turtlesim_node"/> -->
 
-    <node pkg="turtlesim" type="turtle_teleop_key" name="teleop" output="screen"/>
+    <!-- <node pkg="turtlesim" type="turtle_teleop_key" name="teleop" output="screen"/> -->
     <!-- Axes -->
 <!--     <param name="scale_linear" value="2" type="double"/>
-    <param name="scale_angular" value="2" type="double"/> -->
+    <param name="scale_angular" value="2" type="double"/>
 
     <node name="turtle1_tf_broadcaster" pkg="turtle_tf" type="turtle_tf_broadcaster.py" respawn="false" output="screen" >
     <param name="turtle" type="string" value="turtle1" />
     </node>
+
+
     <node name="turtle2_tf_broadcaster" pkg="turtle_tf" type="turtle_tf_broadcaster.py" respawn="false" output="screen" >
     <param name="turtle" type="string" value="turtle2" />
     </node>
     <node name="turtle_pointer" pkg="turtle_tf" type="turtle_tf_listener.py" respawn="false" output="screen" >
-    </node>
+    </node> -->
 
+ <!--    <node pkg="turtlesim" type="rosservice" name="Kill" args="turtle1"/>
+ -->
+    <node pkg="turtlesim" name="sim1" type="turtlesim_node"/>
+
+
+     <node pkg="rosservice" type="rosservice" name="kill" args="call --wait /kill &quot;name: 'turtle1'&quot;"/> 
+
+    <node pkg="rosservice" type="rosservice" name="spawn2" args="call --wait /spawn '2.0' '6.0' '0.0' 'turtle2'"/>
+
+
+    <node pkg="rosservice" type="rosservice" name="spawn1" args="call --wait /spawn '6.0' '10.0' '0.0' 'turtle1'"/>
 
 
 </launch>
