@@ -22,8 +22,10 @@ max_turn_angle = max_turning_speed * dt
 
 
 control = None
-target_state = [2.5, 1.444444, 0.0, 0.0]  # x y t v
-
+minimum_redirection_distance = 3.5
+redirectScaler = 1
+target_state = [9, 5, 0.0, 0.0]  # x y t v
+obstacle_state = [target_state[0]/2, target_state[1], 0.0, 0.0]
 robot_state = [0.0, 0.0, 0.0, 0.0]  # x y t v
 
 
@@ -40,7 +42,6 @@ def poseCallback(data):
 def controlEffortCallback(data):
     global control
     control = data.data
-
 
 def normalize_angle(t):
     return ((t + pi) % (2 * pi)) - pi
@@ -100,12 +101,42 @@ def get_nearest_equivalent(a1, a2):
         a1 += pi
     return a1
 
+
 def get_relative_heading(s1, s2):
     x1, y1, _, _ = s1
     x2, y2, _, _ = s2
     dx = x1 - x2
     dy = y1 - y2
     return atan2(dy, dx)
+
+def get_redirection_vector(s1, s2, k):
+    theta = get_relative_heading(s1, s2)
+    theta = theta - pi/2
+    ds = get_distance(s1, s2)
+
+    if ds > minimum_redirection_distance:
+        return 0.0, 0.0
+
+    V = k/ds
+    # Vx = V*cos(theta)
+    # Vy = V*sin(theta)
+    return V, theta
+
+def get_total_force():
+    redVect, redTheta = get_redirection_vector(obstacle_state, robot_state, redirectScaler)
+    targetVect, targetTheta = get_desired_cmd()
+
+    redVectX = redVect*cos(redTheta)
+    redVectY = redVect*sin(redTheta)
+    targetVectX = targetVect*cos(targetTheta)
+    targetVectY = targetVect*sin(targetTheta)
+
+    vectX = redVectX + targetVectX
+    vectY = redVectY + targetVectY
+    theta = atan2(vectY, vectX)
+    vect = sqrt(vectX*vectX + vectY*vectY)
+
+    return vect, theta
 
 def main():
     rospy.init_node("pidHelper")
@@ -120,7 +151,7 @@ def main():
     while not rospy.is_shutdown():
         theta = robot_state[2]
 
-        vel, desired_theta = get_desired_cmd()
+        vel, desired_theta = get_total_force()
         if not theta is None:
             theta = get_nearest_equivalent(theta, desired_theta)
             statePub.publish(theta)
