@@ -25,7 +25,7 @@ max_turn_angle = max_turning_speed * dt
 control = None
 minimum_redirection_distance = 3.5
 redirectScaler = 1
-target_state = [9, 5, 0.0, 0.0]  # x y t v
+target_state = [0, 0, 0.0, 0.0]  # x y t v
 obstacle_state = [target_state[0]/2, target_state[1], 0.0, 0.0]
 robot_state = [0.0, 0.0, 0.0, 0.0]  # x y t v
 
@@ -151,6 +151,13 @@ def get_other_turtle_name(n):
     other_turtle = "/turtle{}".format(other_n)
     return other_turtle
 
+def set_target(args):
+    global target_state
+    x = args.targetx
+    y = args.targety
+    target_state = [x,y,0.0, 0.0]
+
+
 def main():
     arg_fmt = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(formatter_class=arg_fmt)
@@ -159,7 +166,21 @@ def main():
         default = 1, 
         help='Specifies which robot this is. (Which topics to listen to.)'
     )
+    parser.add_argument(
+        '--targetx', '-x', required=False, type = float,
+        default = 0.0, 
+        help='X position of target'
+    )
+    parser.add_argument(
+        '--targety', '-y', required=False, type = float,
+        default = 0.0, 
+        help='Y position of target'
+    )
+
     args = parser.parse_args(rospy.myargv()[1:])
+
+    set_target(args)
+
     turtle = "/turtle{}".format(args.robotNumber)
     other_turtle = get_other_turtle_name(args.robotNumber)
 
