@@ -37,10 +37,15 @@ def poseCallback(data):
     t = data.theta
     v = data.linear_velocity
     robot_state = [x,y,t,v]
-    # print(robot_state)
 
 def otherTurtlePoseCallback(data):
-    print(data)
+    global obstacle_state
+    x = data.x
+    y = data.y
+    t = data.theta
+    v = data.linear_velocity
+    obstacle_state = [x,y,t,v]
+
 
 def controlEffortCallback(data):
     global control
