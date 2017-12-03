@@ -21,7 +21,7 @@ simulate_turning_limit = False
 
 max_turning_speed = pi / 0.5
 max_turn_angle = max_turning_speed * dt
-
+angle_influence = pi
 
 control = None
 minimum_redirection_distance = 3.5
@@ -118,18 +118,37 @@ def get_relative_heading(s1, s2):
     return atan2(dy, dx)
 
 def get_redirection_vector(s1, s2, k):
-    theta = get_relative_heading(s1, s2)
-    theta = theta - pi/2
     ds = get_distance(s1, s2)
 
-    if ds > minimum_redirection_distance:
+    if ds > minimum_redirection_distance or not isInAngleOfInfluence(s1, s2):
         return 0.0, 0.0
 
+    theta = get_relative_heading(s1, s2)
+    perpTheta = theta - pi/2
+    
     if abs(ds) < 0.0001:
         return 0.0, 0.0
     V = k/ds
 
-    return V, theta
+    return V, perpTheta
+
+def isInAngleOfInfluence(s1, s2):
+    theta = get_relative_heading(s1, s2)
+    upperBound = s2[2] + angle_influence/2
+    lowerBound  = s2[2] - angle_influence/2
+
+    if lowerBound < theta < upperBound:
+        return True
+    else:
+        if theta > 0:
+            theta = theta - 2*pi
+        elif theta < 0:
+            theta = theta + 2*pi
+
+        if lowerBound < theta < upperBound:
+            return True
+
+    return False
 
 def get_total_force():
     redVect, redTheta = get_redirection_vector(obstacle_state, robot_state, redirect_factor)
