@@ -5,6 +5,7 @@ import std_msgs.msg as stdmsgs
 from turtlesim.msg import Pose
 
 
+import argparse
 import time
 from math import asin, sin, cos, pi, sqrt, atan2
 
@@ -29,7 +30,6 @@ obstacle_state = [target_state[0]/2, target_state[1], 0.0, 0.0]
 robot_state = [0.0, 0.0, 0.0, 0.0]  # x y t v
 
 
-
 def poseCallback(data):
     global robot_state
     x = data.x
@@ -37,7 +37,10 @@ def poseCallback(data):
     t = data.theta
     v = data.linear_velocity
     robot_state = [x,y,t,v]
-    print(robot_state)
+    # print(robot_state)
+
+def otherTurtlePoseCallback(data):
+    print(data)
 
 def controlEffortCallback(data):
     global control
@@ -138,13 +141,30 @@ def get_total_force():
 
     return vect, theta
 
+def get_other_turtle_name(n):
+    other_n = 2 if n == 1 else 1
+    other_turtle = "/turtle{}".format(other_n)
+    return other_turtle
+
 def main():
-    rospy.init_node("pidHelper")
-    rospy.Subscriber("/turtle1/pose", Pose, poseCallback)
-    rospy.Subscriber("/turtle1/control_effort", stdmsgs.Float64, controlEffortCallback)
-    statePub = rospy.Publisher("/turtle1/state", stdmsgs.Float64, queue_size = 10)
-    setPointPub = rospy.Publisher("/turtle1/setpoint", stdmsgs.Float64, queue_size = 10)
-    cmdVelPub = rospy.Publisher("/turtle1/cmd_vel", Twist, queue_size = 10)
+    arg_fmt = argparse.RawDescriptionHelpFormatter
+    parser = argparse.ArgumentParser(formatter_class=arg_fmt)
+    parser.add_argument(
+        '--robotNumber', '-n', required=False, type = int,
+        default = 1, 
+        help='Specifies which robot this is. (Which topics to listen to.)'
+    )
+    args = parser.parse_args(rospy.myargv()[1:])
+    turtle = "/turtle{}".format(args.robotNumber)
+    other_turtle = get_other_turtle_name(args.robotNumber)
+
+    rospy.init_node("pidHelper{}".format(args.robotNumber))
+    rospy.Subscriber(turtle + "/pose", Pose, poseCallback)
+    rospy.Subscriber(other_turtle + "/pose", Pose, otherTurtlePoseCallback)
+    rospy.Subscriber(turtle + "/control_effort", stdmsgs.Float64, controlEffortCallback)
+    statePub = rospy.Publisher(turtle + "/state", stdmsgs.Float64, queue_size = 10)
+    setPointPub = rospy.Publisher(turtle + "/setpoint", stdmsgs.Float64, queue_size = 10)
+    cmdVelPub = rospy.Publisher(turtle + "/cmd_vel", Twist, queue_size = 10)
 
     rate = rospy.Rate(60) #10hz
     
